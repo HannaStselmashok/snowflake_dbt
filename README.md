@@ -2,9 +2,9 @@
 
 Data source - http://insideairbnb.com/
 
-## Connecting dbt to Snowflake
-1. Create a new SQL Worksheet in Snowflake
-2. Execute SQL: created dbt user, database and schema, set up permissions. 
+## Connected dbt to Snowflake
+1. Created a new SQL Worksheet in Snowflake
+2. Executed SQL: created dbt user, database and schema, set up permissions. 
 ```sql {#snowflake_setup}
 -- Use an admin role
 USE ROLE ACCOUNTADMIN;
@@ -100,3 +100,16 @@ COPY INTO raw_hosts (id, name, is_superhost, created_at, updated_at)
 ```
 ### Result
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/fd79cac9-9411-4603-ba04-8ca81501313a)
+
+## Virtualenv setup, dbt installation
+Created project folder using cmd
+```
+D:
+cd da\dbt
+mkdir airbnb
+cd airbnb
+```
+Using Python package manager pip installed virtualend (tool that helps manage multiple Python environments in a single machine). It allows to create isolated Python environments, each with its own set of installed packages and dependencies.
+```
+pip install virtualenv
+```
