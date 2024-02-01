@@ -3,8 +3,8 @@
 Data source - http://insideairbnb.com/
 
 ## Connecting dbt to Snowflake
-1. Created a new SQL Worksheet in Snowflake
-2. Executed SQL: created dbt user, database and schema, set up permissions. 
+1. Create a new SQL Worksheet in Snowflake
+2. Execute SQL: created dbt user, database and schema, set up permissions. 
 ```sql {#snowflake_setup}
 -- Use an admin role
 USE ROLE ACCOUNTADMIN;
@@ -98,3 +98,5 @@ COPY INTO raw_hosts (id, name, is_superhost, created_at, updated_at)
                     FILE_FORMAT = (type = 'CSV' skip_header = 1
                     FIELD_OPTIONALLY_ENCLOSED_BY = '"');
 ```
+### Result
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/fd79cac9-9411-4603-ba04-8ca81501313a)
