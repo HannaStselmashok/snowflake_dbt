@@ -121,3 +121,11 @@ venv\Scripts\activate
 Result
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/1dbb9199-a080-4853-80e3-a3f654b80094)
+Install dbt
+```
+pip install dbt-snowflake==1.7.1
+```
+Create the dbt project and connect it to snowflake
+```
+mkdir %userprofile%\.dbt
+
