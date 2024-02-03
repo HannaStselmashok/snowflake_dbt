@@ -125,7 +125,12 @@ Install dbt
 ```
 pip install dbt-snowflake==1.7.1
 ```
-Create the dbt project and connect it to snowflake
+Initialize the dbt profiles folder 
 ```
 mkdir %userprofile%\.dbt
+```
+Create dbt project
+```
+dbt initdbtlearn
+```
 
