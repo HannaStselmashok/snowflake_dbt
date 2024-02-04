@@ -121,6 +121,7 @@ venv\Scripts\activate
 Result
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/1dbb9199-a080-4853-80e3-a3f654b80094)
+
 Install dbt
 ```
 pip install dbt-snowflake==1.7.1
@@ -131,6 +132,8 @@ mkdir %userprofile%\.dbt
 ```
 Create dbt project
 ```
-dbt initdbtlearn
+dbt init dbtlearn
 ```
-
+To complete the connection:
+- Select Snowflake as a database
+- Enter credentials (account, username, password, etc.)
