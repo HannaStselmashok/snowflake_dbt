@@ -148,3 +148,12 @@ Result
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/3c38cf89-147f-45ed-bdfc-d324dd5ede75)
 
 PS if the connection test failed, you should check the credentials in profiles.yml file.
+
+## Dbt project structure overview
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/db429e19-0098-42cc-a905-20b27d9223b4)
+
+Make sure to delete everything after "models: dbtlearn:" at the end of dbt_project.yml
+Then come to models and delete the example folder itself.
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/47ebb0ac-478b-48a7-b2d6-8a6892e9f9af)
