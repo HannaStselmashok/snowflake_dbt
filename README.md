@@ -137,3 +137,14 @@ dbt init dbtlearn
 To complete the connection:
 - Select Snowflake as a database
 - Enter credentials (account, username, password, etc.)
+
+To connect:
+```
+cd debtlearn
+dbt debug
+```
+Result
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/3c38cf89-147f-45ed-bdfc-d324dd5ede75)
+
+PS if the connection test failed, you should check the credentials in profiles.yml file.
