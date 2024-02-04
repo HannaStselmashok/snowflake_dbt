@@ -122,21 +122,21 @@ Result
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/1dbb9199-a080-4853-80e3-a3f654b80094)
 
-Install dbt
+Installed dbt
 ```
 pip install dbt-snowflake==1.7.1
 ```
-Initialize the dbt profiles folder 
+Initialized the dbt profiles folder 
 ```
 mkdir %userprofile%\.dbt
 ```
-Create dbt project
+Created dbt project
 ```
 dbt init dbtlearn
 ```
 To complete the connection:
-- Select Snowflake as a database
-- Enter credentials (account, username, password, etc.)
+- Selected Snowflake as a database
+- Entered credentials (account, username, password, etc.)
 
 To connect:
 ```
@@ -147,13 +147,23 @@ Result
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/3c38cf89-147f-45ed-bdfc-d324dd5ede75)
 
-PS if the connection test failed, you should check the credentials in profiles.yml file.
+PS From the fisrtd try, the connection test failed. I checked the credentials in profiles.yml file. It turned out that the password was entered incorrectly, so I updated it.
 
 ## Dbt project structure overview
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/db429e19-0098-42cc-a905-20b27d9223b4)
 
-Make sure to delete everything after "models: dbtlearn:" at the end of dbt_project.yml
-Then come to models and delete the example folder itself.
+I deleted everything after "models: dbtlearn:" at the end of dbt_project.yml
+Then came to models and deleted the example folder itself.
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/47ebb0ac-478b-48a7-b2d6-8a6892e9f9af)
+
+##Installed and set up dbt extension
+In VS code found and installed 'dbt Power User' extension. Used the instructions to set it up.
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/dd0b30e8-b308-4772-8501-7f8d99e213cb)
+
+##Data model
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/a3dc9c72-f80f-4035-8360-08b49699bc82)
+
