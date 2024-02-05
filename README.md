@@ -184,7 +184,7 @@ Then I integrated them into dbt and made sure that it could execute the statemen
 - Renames id and name columns to make them more meaningful
 - Renames price column to price_str as it has VARCHAR type
 
-```
+```sql
 WITH raw_listings as (
     SELECT * FROM AIRBNB.RAW.RAW_LISTINGS
 )
@@ -229,7 +229,7 @@ dbt run
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/183a80a4-6532-434a-964d-ce1bbd06a84d)
 
 1. SQL query to rename the columns date, comments and sentiment
-```
+```sql
 WITH raw_reviews as (
     SELECT * FROM AIRBNB.RAW.RAW_REVIEWS
 )
@@ -250,7 +250,7 @@ FROM
 ### Raw_hosts
 
 1. SQL query to rename the columns id and host_name
-```
+```sql
 WITH raw_hosts as (
     SELECT * FROM AIRBNB.RAW.RAW_HOSTS
 )
