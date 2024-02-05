@@ -223,3 +223,24 @@ dbt run
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/f255e14e-0835-48db-9026-8a6c0f8a150e)
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/5b641434-78e1-4af5-b7c2-99dde6d25a7c)
+
+### Raw_reviews
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/183a80a4-6532-434a-964d-ce1bbd06a84d)
+
+1. SQL query to rename the columns date, comments and sentiment
+```
+WITH raw_reviews as (
+    SELECT * FROM AIRBNB.RAW.RAW_REVIEWS
+)
+
+SELECT
+    listing_id,
+    date as review_date,
+    reviewer_name,
+    comments as review_text,
+    sentiment as review_sentiment
+FROM
+    raw_reviews
+```
+2-5. Completed as for raw_listings
