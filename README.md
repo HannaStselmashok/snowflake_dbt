@@ -244,3 +244,28 @@ FROM
     raw_reviews
 ```
 3-5. Completed as for raw_listings
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/27b86535-134e-4a68-92b7-13767c7f3fe1)
+
+### Raw_hosts
+
+1. SQL query to rename the columns id and host_name
+```
+WITH raw_hosts as (
+    SELECT * FROM AIRBNB.RAW.RAW_HOSTS
+)
+
+SELECT
+    id as host_id,
+    name as host_name,
+    is_superhost,
+    created_at,
+    updated_at
+    
+FROM
+    raw_hosts
+```
+3-5. Completed as for raw_listings
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/705b174f-291a-442c-b196-9c8ea3ad7ddd)
+
