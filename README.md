@@ -268,4 +268,3 @@ FROM
 3-5. Completed as for raw_listings
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/705b174f-291a-442c-b196-9c8ea3ad7ddd)
-
