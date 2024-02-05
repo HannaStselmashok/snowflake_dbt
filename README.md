@@ -243,4 +243,4 @@ SELECT
 FROM
     raw_reviews
 ```
-2-5. Completed as for raw_listings
+3-5. Completed as for raw_listings
