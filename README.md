@@ -167,3 +167,59 @@ In VS code found and installed 'dbt Power User' extension. Used the instructions
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/a3dc9c72-f80f-4035-8360-08b49699bc82)
 
+## Data flow progress
+
+For now, I have three input tables: raw_hosts, raw_listings and raw_reviews.
+The first cleansing step - creating Staging layer.
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/5bdd1c68-17a8-480d-b206-0059dfad34ca)
+
+First I expressed statements in Snowflake (make sure that sql works well). 
+Then I integrated them into dbt and made sure that it could execute the statements.
+
+### Raw_listings
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/9ba12d38-8c46-4138-90eb-cdfc16622b9c)
+
+1. I wrote  SQL query in Snowflake that:
+- Renames id and name columns to make them more meaningful
+- Renames price column to price_str as it has VARCHAR type
+
+```
+WITH raw_listings as (
+    SELECT * FROM AIRBNB.RAW.RAW_LISTINGS
+)
+
+SELECT
+    id as listing_id,
+    name as listing_name,
+    listing_url,
+    room_type,
+    minimum_nights,
+    host_id,
+    price as price_str,
+    created_at,
+    updated_at
+FROM
+    raw_listings
+```
+2. Opened dbt project. Created new folder in models for src layer
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/6f475418-ea5d-48ed-93fe-8308239bf33f)
+
+3. Created new SQL file and placed SQL statement there.
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/bcb372bc-69e8-4ef9-8e6e-09677ab688f7)
+
+4. In terminal run the query
+
+```
+dbt run
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/f0e219bb-bef0-4fa3-bfd1-485691b73eea)
+
+5. Checked the schema in Snowflake
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/f255e14e-0835-48db-9026-8a6c0f8a150e)
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/5b641434-78e1-4af5-b7c2-99dde6d25a7c)
