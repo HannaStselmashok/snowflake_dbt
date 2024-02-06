@@ -167,7 +167,7 @@ In VS code found and installed 'dbt Power User' extension. Used the instructions
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/a3dc9c72-f80f-4035-8360-08b49699bc82)
 
-## Data flow progress
+## Data flow progress: Staging layer
 
 For now, I have three input tables: raw_hosts, raw_listings and raw_reviews.
 The first cleansing step - creating Staging layer.
@@ -269,4 +269,67 @@ FROM
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/705b174f-291a-442c-b196-9c8ea3ad7ddd)
 
+## Data flow progress: Core layer
 
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d96e86e1-80c9-4beb-9562-db70437e1b1c)
+
+### Dim_listings_cleansed
+
+1. Created new folder 'Dim' in models and new file 'dim_listings_cleansed.sql'
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d704dd01-a2dc-4c5d-8aad-7b090dd496f0)
+
+2. Created and run SQL query
+
+```sql
+WITH src_listings as (
+    SELECT * FROM {{ ref('src_listings') }}
+)
+SELECT
+    listing_id,
+    listing_name,
+    room_type,
+    case
+        when minimum_nights = 0
+        then 1
+        else minimum_nights
+    end as minimum_nights,
+    host_id,
+    replace(
+        price_str,
+        '$'
+    ) :: number(
+        10, 2
+    ) as price,
+    created_at,
+    updated_at    
+FROM
+    src_listings
+```
+### Dim_hosts_cleansed
+1. Created new file in folder 'dim' - 'dim_hohsts_cleansed.sql'
+2. Created and run SQL query
+
+```sql
+WITH src_hosts as (
+    SELECT * FROM {{ref ('src_hosts')}}
+)
+
+SELECT
+    host_id,
+    nvl(host_name, 'Anonymous') as host_name,
+    is_superhost,
+    created_at,
+    updated_at
+FROM    
+    src_hosts
+```
+PS Set up view materialization as default for this project: in dbt_project.yml added a row at the end. Then for dim set default materialization 'table' (because they will be accessed repeatedly) 
+```
+#models:
+#  dbtlearn:
+    +materialized: view
+    dim:
+      +materialized: table
+```
+Executed dbt run to check:
