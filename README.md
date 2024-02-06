@@ -277,7 +277,8 @@ FROM
 
 1. Created new folder 'Dim' in models and new file 'dim_listings_cleansed.sql'
 
-![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d704dd01-a2dc-4c5d-8aad-7b090dd496f0)
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/439d7a04-127b-478e-9a3c-660acdbf155f)
+
 
 2. Created and run SQL query
 
@@ -333,3 +334,8 @@ PS Set up view materialization as default for this project: in dbt_project.yml a
       +materialized: table
 ```
 Executed dbt run to check:
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/308099ed-695a-4199-9002-b2fcb3244335)
+
+### Dim_reviews_cleansed
+1. Incremental view
