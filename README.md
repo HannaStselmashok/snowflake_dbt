@@ -338,4 +338,22 @@ Executed dbt run to check:
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/308099ed-695a-4199-9002-b2fcb3244335)
 
 ### Dim_reviews_cleansed
-1. Incremental view
+For reviews I decided to create an incremental view (there can be appends to this table)
+1. Created new folder fct (fact table) with file fct_reviews.sql
+2. Created and run SQL (with jinja function 'config'):
+```sql
+
+{{
+    config(
+    materialized = 'incremental',
+    on_schema_change = 'fail'
+    )
+}}
+
+WITH src_reviews as (
+    SELECT * FROM {{ ref('src_reviews')}}
+)
+SELECT *
+FROM src_reviews
+WHERE review_text is not null
+```
