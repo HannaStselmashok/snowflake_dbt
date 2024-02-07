@@ -462,3 +462,10 @@ code target/run/dbtlearn/models/dim/dim_listings_cleansed.sql
     )
 }}
 ```
+
+## Seeds and sources
+
+Seeds:
+- Small datasets, live ib seeds folder in .csv format
+- You can upload them to dwh from dbt
+
