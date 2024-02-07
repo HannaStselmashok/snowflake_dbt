@@ -339,7 +339,7 @@ Executed dbt run to check:
 
 ### Dim_reviews_cleansed
 For reviews I decided to create an incremental view (there can be appends to this table)
-1. Created new folder fct (fact table) with file fct_reviews.sql
+1. Created new file in folder 'dim' -  fct_reviews.sql
 2. Created and run SQL (with jinja function 'config'), where defined the condition of increment:
 ```sql
 {{
@@ -389,4 +389,75 @@ LIMIT 3
 PS to rebuild incremental table run
 ```
 dbt run --full-refresh
+```
+###Dim_listings_with_hosts
+1.  Created new file in folder 'dim' - dim_listings-W-hosts.sql
+2.  Created and run SQL query
+```sql
+WITH
+l as (
+    SELECT
+        *
+    FROM
+        {{ ref('dim_listings_cleansed') }}
+),
+h as (
+    SELECT * 
+    FROM {{ ref('dim_hosts_cleansed') }}
+)
+
+SELECT 
+    l.listing_id,
+    l.listing_name,
+    l.room_type,
+    l.minimum_nights,
+    l.price,
+    l.host_id,
+    h.host_name,
+    h.is_superhost as host_is_superhost,
+    l.created_at,
+    greatest(l.updated_at, h.updated_at) as updated_at
+FROM
+    l
+LEFT JOIN 
+    h 
+    on (h.host_id = l.host_id)
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/8f6ea782-6813-41f6-81bc-ea8f6175b4d8)
+
+3. Cleaned up materializations
+- I don't need any materialization in source level.
+Added to dbt_project.yml:
+```
+models:
+  dbtlearn:
+    +materialized: view
+    dim:
+      +materialized: table
+    src:
+      +materialized: ephemeral
+```
+Dropped views in Snowflake
+```
+DROP VIEW AIRBNB.DEV.SRC_HOSTS;
+DROP VIEW AIRBNB.DEV.SRC_LISTINGS;
+DROP VIEW AIRBNB.DEV.SRC_REVIEWS;
+```
+Executed dbt run
+Result - no views in Snowflake
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/18cae0dc-6c18-4d37-9a1e-f0169acd6b9f)
+
+To find the queries - in terminal:
+```
+code target/run/dbtlearn/models/dim/dim_listings_cleansed.sql
+```
+- Shifted dim_listings_cleansed and dim_hosts_cleansed to view materialization (since I have dimension table dim_listings_w_host) by adding jinjia config function in sql files
+```sql
+{{
+    config(
+    materialized = 'view'
+    )
+}}
 ```
