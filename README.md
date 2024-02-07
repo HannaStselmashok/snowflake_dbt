@@ -469,4 +469,4 @@ Seeds:
 - Small datasets, live ib seeds folder in .csv format
 - You can upload them to dwh from dbt
 
-I uploaded [this file] (seed_full_moon_dates.csv) to seeds folder.
+I uploaded [this file](seed_full_moon_dates.csv) to seeds folder.
