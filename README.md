@@ -158,12 +158,12 @@ Then came to models and deleted the example folder itself.
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/47ebb0ac-478b-48a7-b2d6-8a6892e9f9af)
 
-##Installed and set up dbt extension
+### Installed and set up dbt extension
 In VS code found and installed 'dbt Power User' extension. Used the instructions to set it up.
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/dd0b30e8-b308-4772-8501-7f8d99e213cb)
 
-##Data model
+### Data model
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/a3dc9c72-f80f-4035-8360-08b49699bc82)
 
@@ -171,6 +171,7 @@ In VS code found and installed 'dbt Power User' extension. Used the instructions
 
 For now, I have three input tables: raw_hosts, raw_listings and raw_reviews.
 The first cleansing step - creating Staging layer.
+
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/5bdd1c68-17a8-480d-b206-0059dfad34ca)
 
 First I expressed statements in Snowflake (make sure that sql works well). 
