@@ -469,4 +469,103 @@ Seeds:
 - Small datasets, live ib seeds folder in .csv format
 - You can upload them to dwh from dbt
 
-I uploaded [this file](seed_full_moon_dates.csv) to seeds folder.
+I uploaded [this file](seed_full_moon_dates.csv) to seeds folder. Question to be answered: Is it true that a full moon has a negative affection on sleep and mood?
+
+Imported that file to Snowflake by running dbt seed.
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/cb1707ae-5842-4734-914f-0201b6dacd61)
+
+Created mart layer (which will be accessible for BI tools) in models folder. Created file 'mart_fullmoon_reviews.sql'
+
+Executed SQL 
+```sql
+{{ config(
+  materialized = 'table',
+) }}
+
+WITH fct_reviews as (
+    SELECT * FROM {{ ref('fct_reviews') }}
+),
+full_moon_dates as (
+    SELECT * FROM {{ ref('seed_full_moon_dates') }}
+)
+
+SELECT
+    r.*,
+    case
+        when fm.full_moon_date is null 
+        then 'not full moon'
+        else 'full moon'
+    end as is_full_moon
+FROM
+    fct_reviews
+    r
+LEFT JOIN 
+    full_moon_dates
+    fm
+    on (to_date(r.review_date) = dateadd(DAY, 1, fm.full_moon_date))
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/51209e87-43f6-48c1-9a67-be52c7cdd002)
+
+Sources:
+- provide a convenient way to manage connections to external data systems
+- you can check the data freshness
+
+I wanted to shift src files to sources. To do this, I created new .yml file in models table
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/c4de7249-b385-4ab4-87a2-2878597b50d9)
+
+Added extra abstraction on top of raw layer. Can refer to raw tables as source tables.
+```
+version: 2
+
+sources:
+  - name: airbnb
+    schema: raw
+    tables:
+      - name: listings
+        identifier: raw_listings
+
+      - name: hosts
+        identifier: raw_hosts
+
+      - name: reviews
+        identifier: raw_reviews
+```
+Then changed sources in src_listings, src_hosts, srs_reviews
+```sql
+WITH raw_listings as (
+    SELECT * FROM {{ source('airbnb', 'listings') }}
+)
+```
+
+Checked if everything works well by running dbt compile
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d49cb051-924c-4101-9987-3d7901f53ea8)
+
+Added in sources.yml when I should be alerted if loading false
+```
+version: 2
+
+sources:
+  - name: airbnb
+    schema: raw
+    tables:
+      - name: listings
+        identifier: raw_listings
+
+      - name: hosts
+        identifier: raw_hosts
+
+      - name: reviews
+        identifier: raw_reviews
+        loaded_at_field: date
+        freshness:
+          warn_after: {count: 1, period: hour}
+          error_after: {count: 24, period: hour}
+```
+Executed dbt source freshness. I received one warning, because the last updated review table was more than an hour ago
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/b561ea1c-131e-4dc6-8d85-d71b732f561e)
+
