@@ -340,9 +340,8 @@ Executed dbt run to check:
 ### Dim_reviews_cleansed
 For reviews I decided to create an incremental view (there can be appends to this table)
 1. Created new folder fct (fact table) with file fct_reviews.sql
-2. Created and run SQL (with jinja function 'config'):
+2. Created and run SQL (with jinja function 'config'), where defined the condition of increment:
 ```sql
-
 {{
     config(
     materialized = 'incremental',
@@ -356,4 +355,38 @@ WITH src_reviews as (
 SELECT *
 FROM src_reviews
 WHERE review_text is not null
+
+{% if is_incrmental() %}
+    and review_date > (select max(review_date) from {{ this }})
+{% endif %}
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d0664d0c-92dd-4d03-b901-e7090df100f7)
+
+3.1 Simulated adding new review to raw_reviews
+```sql
+INSERT INTO
+    AIRBNB.RAW.RAW_REVIEWS
+VALUES
+    (3176, 
+    current_timestamp(),
+    'Zoltan',
+    'excellent stay!',
+    'positive');
+```
+3.2 Executed dbt run and checed fct_reviews in Snowflake
+```sql
+SELECT
+    *
+FROM
+    AIRBNB.DEV.FCT_REVIEWS
+ORDER BY
+    review_date desc
+LIMIT 3
+```
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/70b348c5-baf6-490e-9d63-3da1d370dc2a)
+
+PS to rebuild incremental table run
+```
+dbt run --full-refresh
 ```
