@@ -98,10 +98,10 @@ COPY INTO raw_hosts (id, name, is_superhost, created_at, updated_at)
                     FILE_FORMAT = (type = 'CSV' skip_header = 1
                     FIELD_OPTIONALLY_ENCLOSED_BY = '"');
 ```
-### Result
+## Result
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/fd79cac9-9411-4603-ba04-8ca81501313a)
 
-## Virtualenv setup, dbt installation
+ Virtualenv setup, dbt installation
 Created project folder using cmd
 ```
 D:
@@ -149,7 +149,7 @@ Result
 
 PS From the first try, the connection test failed. I checked the credentials in profiles.yml file. It turned out that the password was entered incorrectly, so I updated it.
 
-## Dbt project structure overview
+ Dbt project structure overview
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/db429e19-0098-42cc-a905-20b27d9223b4)
 
@@ -391,7 +391,7 @@ PS to rebuild incremental table run
 ```
 dbt run --full-refresh
 ```
-###Dim_listings_with_hosts
+### Dim_listings_with_hosts
 1.  Created new file in folder 'dim' - dim_listings-W-hosts.sql
 2.  Created and run SQL query
 ```sql
