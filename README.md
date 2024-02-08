@@ -672,4 +672,21 @@ models:
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/9830b969-fcdd-4e1d-b027-d3363210c295)
 
+## Singular test
+
+1. created new file in tests folder 'dim_listings_minimum_nights.sql'.
+2. Created a query to check if there are any rows with minimum nights < 1 (singular test is successful when returns 0)
+```sql
+SELECT
+    *
+FROM
+    {{ ref('dim_listings_cleansed') }}
+WHERE 
+    minimum_nights < 1
+LIMIT 
+    10
+```
+3. Executed dbt test
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/f9c78a6e-3a08-42b5-a837-c1cb81e3bc6c)
 
