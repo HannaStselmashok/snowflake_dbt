@@ -569,3 +569,107 @@ Executed dbt source freshness. I received one warning, because the last updated 
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/b561ea1c-131e-4dc6-8d85-d71b732f561e)
 
+## Snapshot table creation
+Snapshots are used to store slowly changing dimensions. I made to snapshot tables: on top of raw_listings and raw_hosts.
+
+1. In snapshots folder created new file 'scd_raw_listings.sql'. Added a query
+```sql
+{% snapshot scd_raw_listings %}
+
+{{
+    config(
+        target_schema='dev',
+        unique_key='id',
+        strategy='timestamp',
+        updated_at='updated_at',
+        invalidate_hard_deletes=True
+    )
+}}
+
+SELECT * FROM {{ source('airbnb', 'listings') }}
+
+{% endsnapshot %}
+```
+2. Executed dbt snapshot, Snapshot was created successfully
+3. Updated for id = 3176 in raw_listings
+```slq
+UPDATE
+    AIRBNB.RAW.RAW_LISTINGS
+SET
+    minimum_nights=30,
+    updated_at=current_timestamp()
+WHERE 
+    id = 3176;
+```
+4. Reexecuted dbt snapshot. Completed successfully
+5. Checked in snowflake
+```sql
+SELECT
+    id,
+    minimum_nights,
+    dbt_updated_at,
+    dbt_valid_from,
+    dbt_valid_to
+FROM
+    AIRBNB.DEV.SCD_RAW_LISTINGS
+WHERE
+    id=3176
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/749de07d-0eed-4fcb-be9b-e96ff9c7875f)
+
+## Tests
+
+### Generic test
+
+I executed dbt build-in generic tests on dim_listings_cleansed table
+1. Created new file in models folder 'schema.yml' 
+2. Placed there testing conditions
+```
+version: 2
+
+models:
+  - name: dim_listings_cleansed
+    columns:
+
+     - name: listing_id
+       tests:
+         - unique
+         - not_null
+```
+3. Executed with dbt test
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/b7d101b1-c628-4b9e-9f1e-a552c2ba32ca)
+
+4. Added other tests to the file
+```
+version: 2
+
+models:
+  - name: dim_listings_cleansed
+    columns:
+
+     - name: listing_id
+       tests:
+         - unique
+         - not_null
+
+     - name: host_id
+       tests:
+         - not_null
+         - relationships:
+             to: ref('dim_hosts_cleansed')
+             field: host_id
+
+     - name: room_type
+       tests:
+         - accepted_values:
+             values: ['Entire home/apt',
+                      'Private room',
+                      'Shared room',
+                      'Hotel room']
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/9830b969-fcdd-4e1d-b027-d3363210c295)
+
+
