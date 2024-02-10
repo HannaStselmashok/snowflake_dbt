@@ -714,6 +714,7 @@ WHERE
 
 ### Custom generic test
 
+First I wanted to create singular test based on macro
 1. Created macro (jinja template) in macros table to check all columns for null in models. File name 'no_nulls_in_columns.sql'
 2. Created query
 ```sql
@@ -736,4 +737,96 @@ WHERE
 4. Executed all tests for dim_lising_cleansed using
 ```
 dbt test --select dim_listing_cleansed
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/0954b048-1dfe-45ff-9bb0-91e8370f692e)
+
+To create generic test based on macro
+1. Created new file in macros folder 'positive_value.sql'
+2. I used minimum nights singular test as a base and created sql query
+```sql
+{% test positive_value(model, column_name) %}
+SELECT
+    *
+FROM
+    {{ model }}
+WHERE
+    {{ column_name}} < 1
+{% endtest %}
+```
+3. In models > schema.yml added new generic test
+```
+version: 2
+
+models:
+  - name: dim_listings_cleansed
+    columns:
+
+     - name: listing_id
+       tests:
+         - unique
+         - not_null
+
+     - name: host_id
+       tests:
+         - not_null
+         - relationships:
+             to: ref('dim_hosts_cleansed')
+             field: host_id
+
+     - name: room_type
+       tests:
+         - accepted_values:
+             values: ['Entire home/apt',
+                      'Private room',
+                      'Shared room',
+                      'Hotel room']
+
+     - name: minimum_nights
+       tests:
+         - positive_value
+```
+4. Executed dbt test
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/f3104313-5385-4f56-b2a2-b4bbb1cb1d10)
+
+To add dbt packages to the project:
+1. Opened hub.getdbt.com > dbt_units
+2. created new file in project 'packages.yml'
+3. Copied and pasted installation definition
+```
+packages:
+  - package: dbt-labs/dbt_utils
+    version: 1.1.1
+```
+4. To install run dbt deps
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/4df958b2-e209-4470-a3ee-0cc63d47c26a)
+
+I wanted to use the specific function - surrogate_key
+1. In models > fct > fct_reviews.sql added column with unique key
+```sql
+{{
+    config(
+    materialized = 'incremental',
+    on_schema_change = 'fail'
+    )
+}}
+
+WITH src_reviews as (
+    SELECT * FROM {{ ref('src_reviews')}}
+)
+SELECT 
+    {{ dbt_utils.surrogate_key(['listing_id', 'review_date', 'reviewer_name', 'review_text']) }} as review_id,
+    *
+FROM src_reviews
+WHERE review_text is not null
+
+{% if is_incremental() %}
+    and review_date > (select max(review_date) from {{ this }})
+{% endif %}
+```
+2. As fct_reviews.sql is an incremental model, to see the changes I run
+```
+dbt run --full-refresh
 ```
