@@ -672,9 +672,9 @@ models:
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/9830b969-fcdd-4e1d-b027-d3363210c295)
 
-## Singular test
+### Singular test
 
-### Minimum nights
+#### Minimum nights
 1. created new file in tests folder 'dim_listings_minimum_nights.sql'.
 2. Created a query to check if there are any rows with minimum nights < 1 (singular test is successful when returns 0)
 ```sql
@@ -691,7 +691,7 @@ LIMIT
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/f9c78a6e-3a08-42b5-a837-c1cb81e3bc6c)
 
-### Created at
+#### Created at
 
 1. Created new file 'consistent_created_at.sql'
 2. Created a query to check that there is no review date before the listing was created.
@@ -712,3 +712,28 @@ WHERE
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/48c95d82-a522-4a58-978c-bac8410dfbf8)
 
+### Custom generic test
+
+1. Created macro (jinja template) in macros table to check all columns for null in models. File name 'no_nulls_in_columns.sql'
+2. Created query
+```sql
+{% macro no_nulls_in_columns(model) %}
+    SELECT 
+        * 
+    FROM 
+        {{ model }} 
+    WHERE
+        {% for col in adapter.get_columns_in_relation(model) -%}
+            {{ col.column }} IS NULL OR
+        {% endfor %}
+        FALSE
+{% endmacro %}
+```
+3. Created test file in tests folder 'no_nulls_in_dim_listings.sql'
+```sql
+{{ no_nulls_in_columns(ref("dim_listings_cleansed")) }}
+```
+4. Executed all tests for dim_lising_cleansed using
+```
+dbt test --select dim_listing_cleansed
+```
