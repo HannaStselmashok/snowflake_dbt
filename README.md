@@ -674,6 +674,7 @@ models:
 
 ## Singular test
 
+### Minimum nights
 1. created new file in tests folder 'dim_listings_minimum_nights.sql'.
 2. Created a query to check if there are any rows with minimum nights < 1 (singular test is successful when returns 0)
 ```sql
@@ -689,4 +690,25 @@ LIMIT
 3. Executed dbt test
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/f9c78a6e-3a08-42b5-a837-c1cb81e3bc6c)
+
+### Created at
+
+1. Created new file 'consistent_created_at.sql'
+2. Created a query to check that there is no review date before the listing was created.
+
+```sql
+SELECT  
+    *
+FROM
+    {{ ref("dim_listings_cleansed") }} l
+INNER JOIN
+    {{ ref("fct_reviews") }} r
+    using(listing_id)
+WHERE 
+    r.review_date <= l.created_at
+```
+
+3. Executed dbt test
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/48c95d82-a522-4a58-978c-bac8410dfbf8)
 
