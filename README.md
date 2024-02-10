@@ -804,7 +804,7 @@ packages:
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/4df958b2-e209-4470-a3ee-0cc63d47c26a)
 
 I wanted to use the specific function - surrogate_key
-1. In models > fct > fct_reviews.sql added column with unique key
+1. In models > fct > fct_reviews.sql added column with unique key using generate_surrogate_key
 ```sql
 {{
     config(
@@ -817,7 +817,7 @@ WITH src_reviews as (
     SELECT * FROM {{ ref('src_reviews')}}
 )
 SELECT 
-    {{ dbt_utils.surrogate_key(['listing_id', 'review_date', 'reviewer_name', 'review_text']) }} as review_id,
+    {{ dbt_utils.generate_surrogate_key(['listing_id', 'review_date', 'reviewer_name', 'review_text']) }} as review_id,
     *
 FROM src_reviews
 WHERE review_text is not null
@@ -826,7 +826,52 @@ WHERE review_text is not null
     and review_date > (select max(review_date) from {{ this }})
 {% endif %}
 ```
-2. As fct_reviews.sql is an incremental model, to see the changes I run
+2. Added var in dbt_project.yml
 ```
-dbt run --full-refresh
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'dbtlearn'
+version: '1.0.0'
+config-version: 2
+
+vars:
+  surrogate_key_treat_nulls_as_empty_strings: true #turn on legacy behaviour
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbtlearn'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+# In this example config, we tell dbt to build all models in the example/
+# directory as views. These settings can be overridden in the individual model
+# files using the `{{ config(...) }}` macro.
+models:
+  dbtlearn:
+    +materialized: view
+    dim:
+      +materialized: table
+    src:
+      +materialized: ephemeral
 ```
+3. dbt run --full-refresh
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/1f33cbd5-b4bb-4ca4-a99e-fcee8be46b4e)
+
