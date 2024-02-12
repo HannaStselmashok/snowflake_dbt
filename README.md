@@ -1169,3 +1169,23 @@ Created new chart and placed it on a [dashboard](https://ade0514b.us2a.app.prese
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/cb976f76-5096-4417-a4dd-c2e7a20d230b)
 
+In models created new file 'dashboards.yml'
+```yaml
+version: 2
+
+exposures:
+  - name: Executive Dashboard
+    type: dashboard
+    maturity: low
+    url: https://ade0514b.us2a.app.preset.io/superset/dashboard/p/JMzy4gBKYd3/
+    description: Executive Dashboard about Airbnb listings and hosts
+      
+
+    depends_on:
+      - ref('dim_listings_w_hosts')
+      - ref('mart_fullmoon_reviews')
+
+    owner:
+      name: Hanna S
+      email: hanna.stselmashok@gmail.com
+```
