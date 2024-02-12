@@ -913,3 +913,64 @@ models:
          - positive_value
 
 ```
+Using command dbt docs found the .json file with documentation
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/285ac247-0ebf-4a2c-b0f2-3735f228d3c3)
+
+Using dbt docs serve command created html page for my project
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/6bfee349-43d8-4971-aea5-39e6a3afb7e6)
+
+In models folder created new file 'docs.md' for focumentation
+
+Placed comment there
+```
+{% docs dim_listing_cleansed__minimum_nights %}
+Minimum number of nights required to rent this property. 
+
+Keep in mind that old listings might have `minimum_nights` set to 0 in the source tables. Our cleansing algorithm updates this to `1`.
+
+{% enddocs %}
+```
+
+In schema.yml file referenced to my md. file in models -name:minimum_nights
+```yaml
+     - name: minimum_nights
+       description: '{{ doc("dim_listing_cleansed__minimum_nights") }}'
+       tests:
+         - positive_value
+```
+
+In terminal
+```
+dbt docs generate
+
+dbt docs serve
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/c8bc7d62-a5b3-4041-9c14-2e3f2aedf6b3)
+
+### Redesign an overview page
+Created new file in models 'overview.md'
+```
+{% docs __overview__ %}
+# Airbnb pipeline
+
+Hey, welcome to our Airbnb pipeline documentation!
+
+Here is the schema of our input data:
+![input schema](https://dbtlearn.s3.us-east-2.amazonaws.com/input_schema.png)
+
+{% enddocs %}
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/dc351a4f-3402-4f2b-b449-7e98b342b84c)
+
+Created new folder 'assets' to store any files there.
+in dbt_project.yml file added row to identify this folder in project
+```yaml
+asset-paths: ["assets"]
+```
+Placed the image with scema to assets folder
+
+Replaced link in overview.md to (assets/input_schema.png)
