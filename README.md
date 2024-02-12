@@ -875,3 +875,41 @@ models:
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/1f33cbd5-b4bb-4ca4-a99e-fcee8be46b4e)
 
+## Dosumentation
+Added documentation ('description:') to schema.yml file
+```yaml
+version: 2
+
+models:
+  - name: dim_listings_cleansed
+    description: Cleansed table which contains Airbnb listings.
+    columns:
+
+     - name: listing_id
+       desciption: Primary key for the listing
+       tests:
+         - unique
+         - not_null
+
+     - name: host_id
+       desciption: The hosts's id. References the host table.
+       tests:
+         - not_null
+         - relationships:
+             to: ref('dim_hosts_cleansed')
+             field: host_id
+
+     - name: room_type
+       description: Type of the apartment / room
+       tests:
+         - accepted_values:
+             values: ['Entire home/apt',
+                      'Private room',
+                      'Shared room',
+                      'Hotel room']
+
+     - name: minimum_nights
+       tests:
+         - positive_value
+
+```
