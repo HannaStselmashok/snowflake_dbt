@@ -1057,3 +1057,115 @@ models:
           - accepted_values:
               values: ['positive', 'neutral', 'negative']
 ```
+
+## Analyses
+In analyses folder created new sql file full_moon_no_sleep.sql
+This means that I don't want to create model on top on this query.
+```sql
+WITH mart_fullmoon_reviews as (
+    SELECT
+        *
+    FROM
+        {{ ref('mart_fullmoon_reviews') }}
+)
+
+SELECT  
+    is_full_moon,
+    review_sentiment,
+    count(*) as review
+FROM    
+    mart_fullmoon_reviews
+GROUP BY
+    is_full_moon,
+    review_sentiment
+ORDER BY 
+    is_full_moon,
+    review_sentiment
+```
+I can compile this file through terminal
+```
+dbt compile
+cd target\compiled\dbtlearn\analyses
+more full_moon_no_sleep.sql 
+```
+
+Copied and pasted query into snowflake
+
+```sql
+WITH mart_fullmoon_reviews as (
+    SELECT
+        *
+    FROM
+        AIRBNB.DEV.mart_fullmoon_reviews
+)
+
+SELECT
+    is_full_moon,
+    review_sentiment,
+    count(*) as review
+FROM
+    mart_fullmoon_reviews
+GROUP BY
+    is_full_moon,
+    review_sentiment
+ORDER BY
+    is_full_moon,
+    review_sentiment
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/791a5cf9-c281-4b9d-9059-dc5fb923dfe8)
+
+### Building dashboard
+
+Create the REPORTER role and PRESET user in Snowflake
+
+```sql
+USE ROLE ACCOUNTADMIN;
+CREATE ROLE IF NOT EXISTS REPORTER;
+CREATE USER IF NOT EXISTS PRESET
+ PASSWORD='presetPassword123'
+ LOGIN_NAME='preset'
+ MUST_CHANGE_PASSWORD=FALSE
+ DEFAULT_WAREHOUSE='COMPUTE_WH'
+ DEFAULT_ROLE='REPORTER'
+ DEFAULT_NAMESPACE='AIRBNB.DEV'
+ COMMENT='Preset user for creating reports';
+
+GRANT ROLE REPORTER TO USER PRESET;
+GRANT ROLE REPORTER TO ROLE ACCOUNTADMIN;
+GRANT ALL ON WAREHOUSE COMPUTE_WH TO ROLE REPORTER;
+GRANT USAGE ON DATABASE AIRBNB TO ROLE REPORTER;
+GRANT USAGE ON SCHEMA AIRBNB.DEV TO ROLE REPORTER;
+
+-- We don't want to grant select rights here; we'll do this through hooks:
+-- GRANT SELECT ON ALL TABLES IN SCHEMA AIRBNB.DEV TO ROLE REPORTER;
+-- GRANT SELECT ON ALL VIEWS IN SCHEMA AIRBNB.DEV TO ROLE REPORTER;
+-- GRANT SELECT ON FUTURE TABLES IN SCHEMA AIRBNB.DEV TO ROLE REPORTER;
+-- GRANT SELECT ON FUTURE VIEWS IN SCHEMA AIRBNB.DEV TO ROLE REPORTER;
+```
+
+Switched to reporter role
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d974b8c4-b89b-4744-806d-a8baef28a0a5)
+
+Added hook to permit reporter see models role in dbt_project.yml
+```yaml
+models:
+  dbtlearn:
+    +materialized: view
+    +post_hook:
+      - "GRANT SELECT ON {{ this }} TO ROLE REPORTER"
+    dim:
+      +materialized: table
+    src:
+      +materialized: ephemeral
+```
+
+Registered to Presset, entered all necessary credentials and created new dataset
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d018fa34-3977-40e7-8a3d-dcab43064013)
+
+Created new chart and placed it on a [dashboard]([url](https://ade0514b.us2a.app.preset.io/superset/dashboard/p/JMzy4gBKYd3/))
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/cb976f76-5096-4417-a4dd-c2e7a20d230b)
+
