@@ -1189,3 +1189,11 @@ exposures:
       name: Hanna S
       email: hanna.stselmashok@gmail.com
 ```
+
+# Advanced dbt
+Added package for running tests to packages.yml
+```yaml
+  - package: calogica/dbt_expectations
+    version: 0.10.1
+```
+Run dbt deps to 
