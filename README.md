@@ -974,3 +974,86 @@ asset-paths: ["assets"]
 Placed the image with scema to assets folder
 
 Replaced link in overview.md to (assets/input_schema.png)
+
+Checked using
+```
+dbt docs generate
+dbt docs serve
+```
+Then opened Data Flow DAG (to see the full flow of data in the project)
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/4077caf4-87d7-48c5-98db-c5468f080e61)
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/296e35db-1ea4-4edc-ac26-8d98dd49a301)
+
+Added description for dim_hosts_cleansed model into schema.yml file
+```yaml
+version: 2
+
+models:
+  - name: dim_listings_cleansed
+    description: Cleansed table which contains Airbnb listings.
+    columns:
+      
+      - name: listing_id
+        description: Primary key for the listing
+        tests:
+          - unique
+          - not_null
+        
+      - name: host_id
+        description: The hosts's id. References the host table.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_hosts_cleansed')
+              field: host_id
+
+      - name: room_type
+        description: Type of the apartment / room
+        tests:
+          - accepted_values:
+              values: ['Entire home/apt', 'Private room', 'Shared room', 'Hotel room']
+
+      - name: minimum_nights
+        description: '{{ doc("dim_listing_cleansed__minimum_nights") }}'
+        tests:
+          - positive_value
+
+  - name: dim_hosts_cleansed
+    description: Cleansed table which contains Airbnb hosts.
+    columns:
+      - name: host_id
+        description: primary key
+        tests:
+          - not_null
+          - unique
+      
+      - name: host_name
+        description: Name of hosts
+        tests:
+          - not_null
+      
+      - name: is_superhost
+        description: Contains boolean values whether the host is superhost. t for True and f for False. 
+        tests:
+          - accepted_values:
+              values: ['t', 'f']
+  
+  - name: fct_reviews
+    columns:
+      - name: listing_id
+        tests:
+          - relationships:
+              to: ref('dim_listings_cleansed')
+              field: listing_id
+
+      - name: reviewer_name
+        tests:
+          - not_null
+      
+      - name: review_sentiment
+        tests:
+          - accepted_values:
+              values: ['positive', 'neutral', 'negative']
+```
