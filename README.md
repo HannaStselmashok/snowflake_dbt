@@ -1165,7 +1165,7 @@ Registered to Presset, entered all necessary credentials and created new dataset
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d018fa34-3977-40e7-8a3d-dcab43064013)
 
-Created new chart and placed it on a [dashboard]([url](https://ade0514b.us2a.app.preset.io/superset/dashboard/p/JMzy4gBKYd3/))
+Created new chart and placed it on a [dashboard] (https://ade0514b.us2a.app.preset.io/superset/dashboard/p/JMzy4gBKYd3/)
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/cb976f76-5096-4417-a4dd-c2e7a20d230b)
 
