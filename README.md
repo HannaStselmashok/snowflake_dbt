@@ -1196,4 +1196,18 @@ Added package for running tests to packages.yml
   - package: calogica/dbt_expectations
     version: 0.10.1
 ```
-Run dbt deps to 
+Run dbt deps to install the package
+
+## Expect the number of rows in a model match another model.
+
+Added test to schema.yml
+```yaml
+  - name: dim_listings_w_hosts
+    tests:
+      - dbt_expectations.expect_table_row_count_to_equal_other_table:
+          compare_model: source('airbnb', 'listings')
+```
+Executed dbt test --select dim_listingsdim_listings_w_hosts
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/5cae665e-ba13-49ef-b70f-faa41571d04a)
+
