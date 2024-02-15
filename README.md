@@ -1211,3 +1211,48 @@ Executed dbt test --select dim_listingsdim_listings_w_hosts
 
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/5cae665e-ba13-49ef-b70f-faa41571d04a)
 
+## Check price is between specific numbers
+
+Added test to schema.yml (under dim_listings_w_hosts)
+
+```yaml
+    columns:
+      - name: price
+        tests:
+          - dbt_expectations.expect_column_quantile_values_to_be_between:
+              quantile: .99
+              min_value: 50
+              max_value: 500
+```
+dbt test --select dim_listings_w_hosts
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/6ad9a004-23f3-4e76-86a6-c2a6ea5ab473)
+
+## Implementation test warnings for external items
+
+Added test to schema.yml (under dim_listings_w_hosts, price column)
+
+```yaml
+          - dbt_expectations.expect_column_max_to_be_between:
+              max_value: 500
+```
+
+The test failed
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/a296d76f-1b35-44aa-85ea-0eb3146dfc06)
+
+Checked the dataset
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/c24ca8bc-7bef-4113-b4b5-d89122bed524)
+
+Changed error to warning in schema.yml test
+
+```yaml
+              config:
+                severity: warn
+```
+
+![Uploading image.png…]()
+
+## Validating column types
+
