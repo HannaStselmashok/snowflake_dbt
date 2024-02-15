@@ -1239,11 +1239,13 @@ Added test to schema.yml (under dim_listings_w_hosts, price column)
 
 The test failed
 
-![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/a296d76f-1b35-44aa-85ea-0eb3146dfc06)
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/1b497146-2097-4aa7-ba6e-891d99b7deeb)
+
 
 Checked the dataset
 
-![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/c24ca8bc-7bef-4113-b4b5-d89122bed524)
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/ef1848d4-2906-4e71-91a6-bd9ceb4692ca)
+
 
 Changed error to warning in schema.yml test
 
@@ -1252,7 +1254,8 @@ Changed error to warning in schema.yml test
                 severity: warn
 ```
 
-![Uploading image.png…]()
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/59ab3f89-c8ec-4d81-a475-2d91b0dbd12a)
+
 
 ## Validating column types
 
