@@ -1259,3 +1259,82 @@ Changed error to warning in schema.yml test
 
 ## Validating column types
 
+Added test in schema.yml (under dim_listings_w_hosts, price column)
+```yaml
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: number
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/941e8563-a2fd-49f3-bda3-1d8fc041f1fd)
+
+## Monitoring categorical variables in the source data
+
+Added to sources.yml under listings
+
+```yaml
+        columns:
+          -name: room_type
+            tests:
+              - dbt_expectations.expect_column_distinct_count_to_equal:
+                  value: 4
+```
+
+dbt test --select source:airbnb.listings
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d331e0ee-26d6-4be3-a7fe-a559c746f3b6)
+
+## Debugging test
+
+Added to sources.yml under listings
+
+```yaml
+          - name: price
+            tests:
+              - dbt_expectations.expect_column_values_to_match_regex:
+                  regex: "^\\$[0-9][0-9\\.]+$"
+```
+dbt test --select source:airbnb.listings
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/d326d3b7-68c3-41ca-bf15-93493cc7c5c8)
+
+dbt --debug test --select source:airbnb.listings
+
+To open file with sql query for this test (in terminal code target\compiled\dbtlearn\models\sources.yml\dbt_expectations_source_expect_a60b59a84fbc4577a11df360c50013bb.sql)
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/a1790a09-521c-4fb5-bd18-d93108084e3f)
+
+Run this query in snowflake
+
+```sql
+with grouped_expression as (
+    select
+        regexp_instr(price, '^\$[0-9][0-9\.]+$', 1, 1, 0, '') > 0 as expression
+    from 
+        AIRBNB.RAW.RAW_LISTINGS
+),
+validation_errors as (
+    select
+        *
+    from
+        grouped_expression
+    where
+        not(expression = true)
+)
+select *
+from validation_errors
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/3c6d8fee-3dbe-438d-8b6b-b65a791885aa)
+
+I decided to ease the expression and for start check that the values in price column start with dollar sign
+
+```sql
+select
+    price,
+    regexp_instr(price, '^\$') > 0 as expression
+from 
+    AIRBNB.RAW.RAW_LISTINGS
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/2b78691c-6711-43c9-955f-9cba876da546)
+
