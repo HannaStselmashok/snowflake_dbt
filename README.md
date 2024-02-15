@@ -1336,5 +1336,30 @@ from
     AIRBNB.RAW.RAW_LISTINGS
 ```
 
+The expressions are still false
+
 ![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/2b78691c-6711-43c9-955f-9cba876da546)
+
+It seemed that the problem was in double escaping. 
+
+```sql
+select
+    price,
+    regexp_instr(price, '^\\$') > 0 as expression
+from 
+    AIRBNB.RAW.RAW_LISTINGS
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/4fbd552b-0c2c-4302-b3a8-496a006917ea)
+
+Corrected test in sources.yml (4 backslashes)
+
+```yaml
+          - name: price
+            tests:
+              - dbt_expectations.expect_column_values_to_match_regex:
+                  regex: "^\\\\$[0-9][0-9\\\\.]+$"
+```
+
+![image](https://github.com/HannaStselmashok/snowflake_dbt/assets/99286647/6d883266-c69d-40f3-8fd2-be31370356bc)
 
