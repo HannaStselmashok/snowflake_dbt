@@ -140,7 +140,7 @@ To complete the connection:
 
 To connect:
 ```
-cd debtlearn
+cd dbtlearn
 dbt debug
 ```
 Result
